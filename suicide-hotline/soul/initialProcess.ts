@@ -8,7 +8,7 @@ const gainsTrustWithTheUser: MentalProcess = async ({ step: initialStep }) => {
   const { setNextProcess } = useProcessManager()
 
   const { stream, nextStep } = await initialStep.next(
-    externalDialog("Talk to the user trying to gain trust and learn about their inner world."),
+    externalDialog("Talk to the interlocutor trying to gain trust and learn about their inner world."),
     { stream: true, model: "quality" }
   );
   speak(stream);
@@ -16,7 +16,7 @@ const gainsTrustWithTheUser: MentalProcess = async ({ step: initialStep }) => {
   const lastStep = await nextStep
   
   let shouldEngageSelfHarmModePromise = lastStep.compute(
-    mentalQuery("The user expressed a desire to hurt themselves?  Not merely sadness, or depression, but a suicidal ideation."),
+    mentalQuery("The interlocutor expressed a desire to hurt themselves?  Not merely sadness, or depression, but a suicidal ideation."),
     { model: "quality" }
   )
 
