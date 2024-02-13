@@ -1,6 +1,7 @@
 import { externalDialog, mentalQuery } from "socialagi";
 import { MentalProcess, useActions, useProcessManager } from "soul-engine";
 import shouts from "./mentalProcesses/shouts.js";
+import selfharm from "./mentalProcesses/selfharm.js";
 
 const gainsTrustWithTheUser: MentalProcess = async ({ step: initialStep }) => {
   const { speak, log } = useActions()
@@ -13,14 +14,19 @@ const gainsTrustWithTheUser: MentalProcess = async ({ step: initialStep }) => {
   speak(stream);
 
   const lastStep = await nextStep
-  const shouldShout = await lastStep.compute(
-    mentalQuery("The interlocuter is being rude")
+  
+  let shouldEngageSelfHarmModePromise = lastStep.compute(
+    mentalQuery("The user expressed a desire to hurt themselves?  Not merely sadness, or depression, but a suicidal ideation."),
+    { model: "quality" }
   )
-  log("User attacked soul?", shouldShout)
-  if (shouldShout) {
-    setNextProcess(shouts)
-  }
 
+  const shouldEngageSelfHarmMode = await shouldEngageSelfHarmModePromise
+
+  log("Self Harm detected?", shouldEngageSelfHarmMode)
+  if (shouldEngageSelfHarmMode) {
+      log("Informing oncall triage staff of possible self harm ideation")
+    setNextProcess(selfharm)
+  }
   return lastStep
 }
 
